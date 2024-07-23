@@ -22,22 +22,32 @@ mover_abajo = False
 mover_izquierda = False
 mover_derecha = False
 
+"""FRAME DEL JUEGO"""
+reloj = pygame.time.Clock()
+
 """ciclo para mantener ventana"""
 rum = True
 while rum:
+    
+    """FPS"""
+    reloj.tick(Constantes.FPS)
+    
+    """COLOR DE LA VENTANA"""
+    ventana.fill(Constantes.COLOR_BG)
+    
     """calcular movimiento del jugador"""
     delta_x = 0
     delta_y = 0
     
     """ciclo de movimiento del jugador"""
     if mover_derecha == True:
-        delta_x = 5
+        delta_x = Constantes.VELOCIDAD_PERSONAJE
     if mover_izquierda == True:
-        delta_x = -5
+        delta_x = -Constantes.VELOCIDAD_PERSONAJE
     if mover_arriba == True:
-        delta_y = -5
+        delta_y = -Constantes.VELOCIDAD_PERSONAJE
     if mover_abajo == True:
-        delta_y = 5
+        delta_y = Constantes.VELOCIDAD_PERSONAJE
     
     """Mostrar movimiento del personaje"""
     Jugador.movimiento(delta_x,delta_y)
@@ -60,6 +70,16 @@ while rum:
                 mover_arriba = True
             if event.key == pygame.K_DOWN or event .key == pygame.K_s:
                 mover_abajo = True
+        """Detener movimineto del personaje"""
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT or event .key == pygame.K_a:
+                mover_izquierda = False
+            if event.key == pygame.K_RIGHT or event .key == pygame.K_d:
+                mover_derecha = False
+            if event.key == pygame.K_UP or event .key == pygame.K_w:
+                mover_arriba = False
+            if event.key == pygame.K_DOWN or event .key == pygame.K_s:
+                mover_abajo = False
             
     """Actualizar la pantalla del juego"""
     pygame.display.update()
