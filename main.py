@@ -11,8 +11,21 @@ ventana = pygame.display.set_mode((constantes.ANCHO_VENTANA, constantes.ALTO_VEN
 # Nombre de la ventana
 pygame.display.set_caption("Juego Progra. Avanzada")
 
+def escalar_imagen(imagen, escala):
+    w = imagen.get_width()
+    h = imagen.get_height()
+    nueva_imagen = pygame.transform.scale(imagen, (w*escala, h*escala))
+    return nueva_imagen
+
+animaciones = []
+for i in range (8):
+    img = pygame.image.load(f"assets//images//character//caminar//caminar_{i}.png")
+    img = escalar_imagen(img, constantes.ESCALA_PERSONAJE)
+    animaciones.append(img)
+
+
 # Variables
-jugador = Personaje(50,50)
+jugador = Personaje(50,50, animaciones)
 
 #definir variables de movimiento del jugador
 mover_arriba = False
@@ -51,6 +64,8 @@ while run:
 
     # mover al jugar
     jugador.movimiento(delta_x, delta_y)
+
+    jugador.actualizar()
 
     jugador.dibujar(ventana)
 
