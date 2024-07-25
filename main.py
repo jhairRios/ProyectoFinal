@@ -18,7 +18,7 @@ def escalar_imagen(imagen, escala):
     return nueva_imagen
 
 animaciones = []
-for i in range (8):
+for i in range (7):
     img = pygame.image.load(f"assets//images//character//caminar//caminar_{i}.png")
     img = escalar_imagen(img, constantes.ESCALA_PERSONAJE)
     animaciones.append(img)
