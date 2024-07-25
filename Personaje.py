@@ -1,47 +1,41 @@
 import pygame
-import Constantes
+import constantes
 
-class personaje():
-    #tamano del personaje
-    def __init__(self,x,y,animaciones):
-        #voltear el personaje
+class Personaje():
+    def __init__(self, x, y, animaciones):
         self.flip = False
-        #hacer que el personaje se mueva
         self.animaciones = animaciones
-        #imagen animacion
-        self.freame_index = 0
-        #alcacenamiento del tiempo de pygame
+        self.frame_index = 0
         self.update_time = pygame.time.get_ticks()
-        #llamar la imagen
-        self.image = animaciones[self.freame_index] 
-        #tamaño del personaje
-        self.forma = pygame.Rect(0, 0, Constantes.ANCHO_PERSONAJE,
-                                       Constantes.ALTO_PERSONAJE)
-        self.forma.center = (x,y)
-        
-    #Movimiento del personaje
+        self.image = animaciones[self.frame_index]
+        self.forma = pygame.Rect(0, 0, constantes.ANCHO_PERSONAJE, constantes.ALTO_PERSONAJE)
+        self.forma.center = (x, y)
+        self.en_movimiento = False  # Bandera para controlar el movimiento
+
+    def actualizar(self):
+        cooldown_animacion = 100
+        if self.en_movimiento:
+            if pygame.time.get_ticks() - self.update_time >= cooldown_animacion:
+                self.frame_index = (self.frame_index + 1) % len(self.animaciones)
+                self.update_time = pygame.time.get_ticks()
+        self.image = self.animaciones[self.frame_index]
+
+    def dibujar(self, interfaz):
+        imagen_flip = pygame.transform.flip(self.image, self.flip, False)
+        interfaz.blit(imagen_flip, self.forma)
+
     def movimiento(self, delta_x, delta_y):
-        #ciclo invertir personaje
-        if delta_x < 0:
-            self.flip = True
+        if delta_x != 0 or delta_y != 0:
+            self.en_movimiento = True
+        else:
+            self.en_movimiento = False
+            self.frame_index = 0  # Restablecer al primer fotograma
+
+        # Actualiza la dirección del personaje
         if delta_x > 0:
             self.flip = False
-            
-        #posicion del personaje
-        self.forma.x = self.forma.x + delta_x
-        self.forma.y = self.forma.y + delta_y
-        
-        #actualizar la imagen
-    def update(self):
-        cooldown_animacion = 100
-        self.image = self.animaciones[self.freame_index]
-        if pygame.time.get_ticks() - self.update_time >= cooldown_animacion:
-            self.freame_index = self.freame_index + 1
-            self.update_time = pygame.time.get_ticks()
-        if self.freame_index >= len(self.animaciones):
-            self.freame_index = 0
-    #divujar el personaje
-    def dibujar(self, interfaz):
-        imagen_flip = pygame.transform.flip(self.image, self.flip,False)
-        interfaz.blit(imagen_flip, self.forma)
-        #pygame.draw.rect(interfaz,Constantes.COLOR_PERSONAJE , self.forma)
+        elif delta_x < 0:
+            self.flip = True
+
+        self.forma.x += delta_x
+        self.forma.y += delta_y

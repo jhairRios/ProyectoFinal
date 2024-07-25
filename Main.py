@@ -1,105 +1,103 @@
-#libreria
 import pygame
-import Constantes
-from Personaje import personaje
+import constantes
+from personaje import Personaje
 
-#Inicialisamos la libreria
+# Inicialisamos la libreria
 pygame.init()
 
-#ventana del juego
-ventana = pygame.display.set_mode((Constantes.ANCHO_VENTANA,Constantes.ALTO_VENTANA))
+# ventana del juego
+ventana = pygame.display.set_mode((constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA))
 
-def escalar_img (image,escala):
-    w = image.get_width()
-    h = image.get_height()
-    nueva_imagen = pygame.transform.scale(image,(int(w*escala),int(h*escala)))
+# Nombre de la ventana
+pygame.display.set_caption("Juego Progra. Avanzada")
+
+def escalar_imagen(imagen, escala):
+    w = imagen.get_width()
+    h = imagen.get_height()
+    nueva_imagen = pygame.transform.scale(imagen, (w*escala, h*escala))
     return nueva_imagen
 
-#animacion del personaje
 animaciones = []
-#for para cargar las imagenes
-for i in range(8):
-    img = pygame.image.load(f"Viking pack//Base sprite//caminar_{i}.png")
-    img = escalar_img(img,Constantes.ESCALA_PERSONAJE)
+for i in range (7):
+    img = pygame.image.load(f"assets//images//character//caminar//caminar_{i}.png")
+    img = escalar_imagen(img, constantes.ESCALA_PERSONAJE)
     animaciones.append(img)
 
 
-#Variables
-Jugador = personaje(50,50,animaciones)
+# Variables
+jugador = Personaje(50,50, animaciones)
 
-#Nombre de la ventana
-pygame.display.set_caption("Proyecto clase")
-
-#Variables de movimiento
+#definir variables de movimiento del jugador
 mover_arriba = False
 mover_abajo = False
 mover_izquierda = False
 mover_derecha = False
 
-#FRAME DEL JUEGO
+# controlar el movimiento del jugador
 reloj = pygame.time.Clock()
 
-#ciclo para mantener ventana
-rum = True
-while rum:
+
+# ciclo para mantener ventana
+run = True
+while run:
+
+    # velocidad de 60 fps
+    reloj.tick(constantes.FPS)
     
-    #FPS
-    reloj.tick(Constantes.FPS)
-    
-    #COLOR DE LA VENTANA
-    ventana.fill(Constantes.COLOR_BG)
-    
-    #calcular movimiento del jugador
+    ventana.fill(constantes.COLOR_BG)
+
+    # calcular movimiento del jugador
     delta_x = 0
     delta_y = 0
-    
-    #ciclo de movimiento del jugador
-    if mover_derecha == True:
-        delta_x = Constantes.VELOCIDAD_PERSONAJE
-    if mover_izquierda == True:
-        delta_x = -Constantes.VELOCIDAD_PERSONAJE
-    if mover_arriba == True:
-        delta_y = -Constantes.VELOCIDAD_PERSONAJE
-    if mover_abajo == True:
-        delta_y = Constantes.VELOCIDAD_PERSONAJE
-    
-    #Mostrar movimiento del personaje
-    Jugador.movimiento(delta_x,delta_y)
-    
-    #actualizar movimiento del personaje
-    Jugador.update()
-        
-    #llamamos a la funcion dbujar jugador
-    Jugador.dibujar(ventana)
 
-    #for para ver los eventos del jquery
+    if mover_derecha == True:
+        delta_x = constantes.VELOCIDAD_PERSONAJE
+
+    if mover_izquierda == True:
+        delta_x = -constantes.VELOCIDAD_PERSONAJE
+
+    if mover_arriba == True:
+        delta_y = -constantes.VELOCIDAD_PERSONAJE
+
+    if mover_abajo == True:
+        delta_y = constantes.VELOCIDAD_PERSONAJE
+
+    # mover al jugar
+    jugador.movimiento(delta_x, delta_y)
+
+    jugador.actualizar()
+
+    jugador.dibujar(ventana)
+
+    # for para ver los eventos del jquery
     for event in pygame.event.get():
+
+        #evento para cerra la ventana
         if event.type == pygame.QUIT:
-            rum = False
-            
-        #movimiento del personaje
+            run = False
+
+        # evento para mover el personaje
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT or event .key == pygame.K_a:
+            if event.key ==  pygame.K_a or event.key == pygame.K_LEFT:
                 mover_izquierda = True
-            if event.key == pygame.K_RIGHT or event .key == pygame.K_d:
+            if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
                 mover_derecha = True
-            if event.key == pygame.K_UP or event .key == pygame.K_w:
+            if event.key == pygame.K_w or event.key == pygame.K_UP:
                 mover_arriba = True
-            if event.key == pygame.K_DOWN or event .key == pygame.K_s:
+            if event.key == pygame.K_s or event.key == pygame.K_DOWN:
                 mover_abajo = True
-        #Detener movimineto del personaje
+
+        # evento para dejar de mover el personaje
         if event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT or event .key == pygame.K_a:
+            if event.key ==  pygame.K_a or event.key == pygame.K_LEFT:
                 mover_izquierda = False
-            if event.key == pygame.K_RIGHT or event .key == pygame.K_d:
+            if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
                 mover_derecha = False
-            if event.key == pygame.K_UP or event .key == pygame.K_w:
+            if event.key == pygame.K_w or event.key == pygame.K_UP:
                 mover_arriba = False
-            if event.key == pygame.K_DOWN or event .key == pygame.K_s:
+            if event.key == pygame.K_s or event.key == pygame.K_DOWN:
                 mover_abajo = False
-            
-    #Actualizar la pantalla del juego
+
     pygame.display.update()
-    
-    #fin del juego
+
 pygame.quit()
