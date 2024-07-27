@@ -1,8 +1,9 @@
 import pygame
 import constantes
 from personaje import Personaje
+from arma import Arma
 
-# Inicialisamos la libreria
+# Inicializamos la libreria
 pygame.init()
 
 # ventana del juego
@@ -17,15 +18,31 @@ def escalar_imagen(imagen, escala):
     nueva_imagen = pygame.transform.scale(imagen, (w*escala, h*escala))
     return nueva_imagen
 
+#importar imagenes
+
+# Personaje
 animaciones = []
 for i in range (7):
-    img = pygame.image.load(f"assets//images//character//caminar//caminar_{i}.png")
+    img = pygame.image.load(f"assets//images//character//caminar//caminar_{i}.png").convert_alpha()
     img = escalar_imagen(img, constantes.ESCALA_PERSONAJE)
     animaciones.append(img)
 
+# Arma
+imagen_pistola = pygame.image.load(f"assets//images//armas//arma.png").convert_alpha()
+imagen_pistola = escalar_imagen(imagen_pistola, constantes.ESCALA_ARMA)
 
-# Variables
+# Balas
+imagen_balas = pygame.image.load(f"assets//images//armas//bala.png").convert_alpha()
+imagen_balas = escalar_imagen(imagen_balas, constantes.ESCALA_ARMA)
+
+# Crear un objeto de la clase personaje
 jugador = Personaje(50,50, animaciones)
+
+# Crear un arma de la clase arma
+pistola = Arma(imagen_pistola, imagen_balas)
+
+# Crear grupo de sprites
+grupo_balas = pygame.sprite.Group()
 
 #definir variables de movimiento del jugador
 mover_arriba = False
@@ -65,9 +82,28 @@ while run:
     # mover al jugar
     jugador.movimiento(delta_x, delta_y)
 
+    # actualizar al jugador
     jugador.actualizar()
 
+    # actualizar al arma
+    bala = pistola.actualizar(jugador)
+    if bala:
+        grupo_balas.add(bala)
+
+    print(len(grupo_balas))
+    
+    for bala in grupo_balas:
+        bala.actualizar()
+        
+    # dibujar al jugador
     jugador.dibujar(ventana)
+
+    # dibujar al arma
+    pistola.dibujar(ventana)
+
+    # dibujar balas
+    for bala in grupo_balas:
+        bala.dibujar(ventana)
 
     # for para ver los eventos del jquery
     for event in pygame.event.get():
