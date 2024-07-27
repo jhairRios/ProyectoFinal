@@ -23,7 +23,7 @@ def escalar_imagen(imagen, escala):
 # Personaje
 animaciones = []
 for i in range (7):
-    img = pygame.image.load(f"assets//images//character//caminar//caminar_{i}.png").convert_alpha()
+    img = pygame.image.load(f"assets//images//character//jugador//caminar//caminar_{i}.png").convert_alpha()
     img = escalar_imagen(img, constantes.ESCALA_PERSONAJE)
     animaciones.append(img)
 
@@ -90,7 +90,7 @@ while run:
     if bala:
         grupo_balas.add(bala)
 
-    print(len(grupo_balas))
+    #print(len(grupo_balas))
     
     for bala in grupo_balas:
         bala.actualizar()
