@@ -1,6 +1,7 @@
 import pygame
 import math
 import constantes
+import random
 
 class Arma():
 
@@ -78,12 +79,26 @@ class Bala(pygame.sprite.Sprite):
         self.delta_x = math.cos(math.radians(self.angulo)) * constantes.VELOCIDAD_BALA
         self.delta_y = -math.sin(math.radians(self.angulo)) * constantes.VELOCIDAD_BALA
 
-    def actualizar(self):
+    def actualizar(self, lista_enemigos):
+        danio = 0
+        posicion_danio = None
         self.rect.x += self.delta_x
         self.rect.y += self.delta_y
         
+        # verificar si la bala sale de la pantalla
         if self.rect.right < 0 or self.rect.left > constantes.ANCHO_VENTANA or self.rect.top > constantes.ALTO_VENTANA or self.rect.bottom < 0:
             self.kill()
+
+        # verificar colision con enemigos
+        for enemigo in lista_enemigos:
+            if enemigo.forma.colliderect(self.rect):
+                danio = 15 + random.randint(-7, 7)
+                posicion_danio = enemigo.forma
+                enemigo.energia -= danio
+                self.kill()
+                break
+
+        return danio, posicion_danio
 
 
     def dibujar(self, interfaz):

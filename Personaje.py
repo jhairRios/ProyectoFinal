@@ -2,7 +2,9 @@ import pygame
 import constantes
 
 class Personaje():
-    def __init__(self, x, y, animaciones):
+    def __init__(self, x, y, animaciones, energia):
+        self.energia = energia
+        self.vivo = True
         self.flip = False
         self.animaciones = animaciones
         self.frame_index = 0
@@ -13,6 +15,11 @@ class Personaje():
         self.en_movimiento = False  # Bandera para controlar el movimiento
 
     def actualizar(self):
+        # comprobar si el jugador esta muerto
+        if self.energia <= 0:
+            self.energia = 0
+            self.vivo = False
+
         cooldown_animacion = constantes.COOLDOWN_ANIMACION
         if self.en_movimiento:
             if pygame.time.get_ticks() - self.update_time >= cooldown_animacion:
@@ -40,3 +47,31 @@ class Personaje():
 
         self.forma.x += delta_x
         self.forma.y += delta_y
+
+class Enemigos():
+    def __init__(self, x, y, animaciones, energia):
+        self.energia = energia
+        self.vivo = True
+        self.flip = False
+        self.animaciones = animaciones
+        self.frame_index = 0
+        self.update_time = pygame.time.get_ticks()
+        self.image = animaciones[self.frame_index]
+        self.forma = self.image.get_rect()
+        self.forma.center = (x, y)
+
+    def actualizar(self):
+        # comprobar si el enemigo esta muerto
+        if self.energia <= 0:
+            self.energia = 0
+            self.vivo = False
+
+        cooldown_animacion = constantes.COOLDOWN_ANIMACION
+        if pygame.time.get_ticks() - self.update_time >= cooldown_animacion:
+            self.frame_index = (self.frame_index + 1) % len(self.animaciones)
+            self.update_time = pygame.time.get_ticks()
+        self.image = self.animaciones[self.frame_index]
+
+    def dibujar(self, interfaz):
+        imagen_flip = pygame.transform.flip(self.image, self.flip, False)
+        interfaz.blit(imagen_flip, self.forma)

@@ -1,7 +1,26 @@
+import os
 import pygame
 import constantes
 from personaje import Personaje
+from personaje import Enemigos
 from arma import Arma
+from textos import Texto_de_danio
+
+#Funciones
+# escalar imagen
+def escalar_imagen(imagen, escala):
+    w = imagen.get_width()
+    h = imagen.get_height()
+    nueva_imagen = pygame.transform.scale(imagen, (w*escala, h*escala))
+    return nueva_imagen
+
+# funcion contar elementos
+def contar_elementos(directorio):
+    return len(os.listdir(directorio))
+
+#funcion listar nombres de elementos
+def nombres_carpetas(directorio):
+    return os.listdir(directorio)
 
 # Inicializamos la libreria
 pygame.init()
@@ -12,11 +31,8 @@ ventana = pygame.display.set_mode((constantes.ANCHO_VENTANA, constantes.ALTO_VEN
 # Nombre de la ventana
 pygame.display.set_caption("Juego Progra. Avanzada")
 
-def escalar_imagen(imagen, escala):
-    w = imagen.get_width()
-    h = imagen.get_height()
-    nueva_imagen = pygame.transform.scale(imagen, (w*escala, h*escala))
-    return nueva_imagen
+# Inicializar fuente
+fuente = pygame.font.Font("assets//fonts//Super_Mario_Bros_NES.ttf", constantes.ESCALA_TEXTO_DANIO)
 
 #importar imagenes
 
@@ -27,6 +43,23 @@ for i in range (7):
     img = escalar_imagen(img, constantes.ESCALA_PERSONAJE)
     animaciones.append(img)
 
+# Enemigos
+directorio_enemigos = "assets//images//character//enemigos"
+tipo_enemigos = nombres_carpetas(directorio_enemigos)
+animaciones_enemigos = []
+for enemigo in tipo_enemigos:
+    lista_temp = []
+    ruta_temp = f"assets//images//character//enemigos//{enemigo}//caminar"
+    num_animaciones = contar_elementos(ruta_temp)
+
+    for i in range(num_animaciones):
+        img_enemigo = pygame.image.load(f"assets//images//character//enemigos//{enemigo}//caminar//caminar_{i}.png").convert_alpha()
+        img_enemigo = escalar_imagen(img_enemigo, constantes.ESCALA_ENEMIGOS)
+        lista_temp.append(img_enemigo)
+    
+    animaciones_enemigos.append(lista_temp)
+
+
 # Arma
 imagen_pistola = pygame.image.load(f"assets//images//armas//arma.png").convert_alpha()
 imagen_pistola = escalar_imagen(imagen_pistola, constantes.ESCALA_ARMA)
@@ -36,13 +69,29 @@ imagen_balas = pygame.image.load(f"assets//images//armas//bala.png").convert_alp
 imagen_balas = escalar_imagen(imagen_balas, constantes.ESCALA_ARMA)
 
 # Crear un objeto de la clase personaje
-jugador = Personaje(50,50, animaciones)
+jugador = Personaje(50,50, animaciones, constantes.VIDA_PERSONAJE)
+
+# Crear un enemigo de la clase personaje
+demon = Enemigos(400,300, animaciones_enemigos[0], constantes.VIDA_DEMON)
+ghoul = Enemigos(400,400, animaciones_enemigos[1], constantes.VIDA_GHOUL)
+mole = Enemigos(400,500, animaciones_enemigos[2], constantes.VIDA_MOLE)
+# Para agregar mas enemigos solo se debe agregar mas objetos de la clase enemigos
+
+# Crear lista de enemigos
+lista_enemigos = []
+lista_enemigos.append(demon)
+lista_enemigos.append(ghoul)
+lista_enemigos.append(mole)
+# Para agregar mas enemigos solo se debe agregar mas objetos de la clase enemigos a la lista
 
 # Crear un arma de la clase arma
 pistola = Arma(imagen_pistola, imagen_balas)
 
 # Crear grupo de sprites
 grupo_balas = pygame.sprite.Group()
+grupo_texto_danio = pygame.sprite.Group()
+
+
 
 #definir variables de movimiento del jugador
 mover_arriba = False
@@ -85,6 +134,11 @@ while run:
     # actualizar al jugador
     jugador.actualizar()
 
+    # actualizar al enemigo
+    for enemigo in lista_enemigos:
+        enemigo.actualizar()
+        print(enemigo.energia)
+
     # actualizar al arma
     bala = pistola.actualizar(jugador)
     if bala:
@@ -92,11 +146,24 @@ while run:
 
     #print(len(grupo_balas))
     
+    # actualizar balas
     for bala in grupo_balas:
-        bala.actualizar()
+        danio, posicion_danio = bala.actualizar(lista_enemigos)
+
+        if danio:
+            texto_danio = Texto_de_danio(posicion_danio.centerx, posicion_danio.centery, str(danio), fuente, constantes.COLOR_TEXTO_DANIO)
+            grupo_texto_danio.add(texto_danio)
+
+
+    # actualizar texto de daño
+    grupo_texto_danio.update()
         
     # dibujar al jugador
     jugador.dibujar(ventana)
+
+    # dibujar al enemigo
+    for enemigo in lista_enemigos:
+        enemigo.dibujar(ventana)
 
     # dibujar al arma
     pistola.dibujar(ventana)
@@ -104,6 +171,9 @@ while run:
     # dibujar balas
     for bala in grupo_balas:
         bala.dibujar(ventana)
+
+    # dibujar texto de daño
+    grupo_texto_danio.draw(ventana)
 
     # for para ver los eventos del jquery
     for event in pygame.event.get():
