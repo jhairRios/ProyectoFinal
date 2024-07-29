@@ -8,7 +8,7 @@ class Personaje():
         self.frame_index = 0
         self.update_time = pygame.time.get_ticks()
         self.image = animaciones[self.frame_index]
-        self.forma = pygame.Rect(0, 0, constantes.ANCHO_PERSONAJE, constantes.ALTO_PERSONAJE)
+        self.forma = self.image.get_rect()
         self.forma.center = (x, y)
         self.en_movimiento = False  # Bandera para controlar el movimiento
 
@@ -23,6 +23,7 @@ class Personaje():
     def dibujar(self, interfaz):
         imagen_flip = pygame.transform.flip(self.image, self.flip, False)
         interfaz.blit(imagen_flip, self.forma)
+        #pygame.draw.rect(interfaz, constantes.COLOR_PERSONAJE, self.forma, width=1)
 
     def movimiento(self, delta_x, delta_y):
         if delta_x != 0 or delta_y != 0:
