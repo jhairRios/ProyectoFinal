@@ -102,6 +102,12 @@ mover_derecha = False
 # controlar el movimiento del jugador
 reloj = pygame.time.Clock()
 
+# Cargar imagen del puntero
+puntero_img = pygame.image.load("assets//images//armas//mira.png").convert_alpha()
+puntero_img = pygame.transform.scale(puntero_img, constantes.ESCALA_PUNTERO)
+
+# Ocultar el puntero predeterminado
+pygame.mouse.set_visible(False)
 
 # ciclo para mantener ventana
 run = True
@@ -151,7 +157,7 @@ while run:
         danio, posicion_danio = bala.actualizar(lista_enemigos)
 
         if danio:
-            texto_danio = Texto_de_danio(posicion_danio.centerx, posicion_danio.centery, str(danio), fuente, constantes.COLOR_TEXTO_DANIO)
+            texto_danio = Texto_de_danio(posicion_danio.centerx, posicion_danio.centery, f"-{danio}", fuente, constantes.COLOR_TEXTO_DANIO)
             grupo_texto_danio.add(texto_danio)
 
 
@@ -203,6 +209,12 @@ while run:
                 mover_arriba = False
             if event.key == pygame.K_s or event.key == pygame.K_DOWN:
                 mover_abajo = False
+
+    # Obtener la posición del cursor
+    pos_cursor = pygame.mouse.get_pos()
+
+    # Dibujar la imagen del puntero en la posición del cursor
+    ventana.blit(puntero_img, pos_cursor)
 
     pygame.display.update()
 

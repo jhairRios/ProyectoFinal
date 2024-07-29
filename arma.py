@@ -92,7 +92,7 @@ class Bala(pygame.sprite.Sprite):
         # verificar colision con enemigos
         for enemigo in lista_enemigos:
             if enemigo.forma.colliderect(self.rect):
-                danio = 15 + random.randint(-7, 7)
+                danio = constantes.DANIO_BALA + random.randint(-5, 5)
                 posicion_danio = enemigo.forma
                 enemigo.energia -= danio
                 self.kill()
