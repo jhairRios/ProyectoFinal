@@ -22,6 +22,21 @@ def contar_elementos(directorio):
 def nombres_carpetas(directorio):
     return os.listdir(directorio)
 
+def vida_jugador():
+    for i in range(5):
+        energia_actual = jugador.energia - (i * 100)
+        if energia_actual >= 76:
+            ventana.blit(corazon_100, (10 + i * 40, 10))
+        elif energia_actual >= 51:
+            ventana.blit(corazon_75, (10 + i * 40, 10))
+        elif energia_actual >= 26:
+            ventana.blit(corazon_50, (10 + i * 40, 10))
+        elif energia_actual >= 1:
+            ventana.blit(corazon_25, (10 + i * 40, 10))
+        else:
+            ventana.blit(corazon_0, (10 + i * 40, 10))
+
+
 # Inicializamos la libreria
 pygame.init()
 
@@ -35,6 +50,20 @@ pygame.display.set_caption("Juego Progra. Avanzada")
 fuente = pygame.font.Font("assets//fonts//Super_Mario_Bros_NES.ttf", constantes.ESCALA_TEXTO_DANIO)
 
 #importar imagenes
+
+# Vida del personaje
+corazon_0 = pygame.image.load("assets//images//items//vida//vida_0.png").convert_alpha()
+corazon_25 = pygame.image.load("assets//images//items//vida//vida_25.png").convert_alpha()
+corazon_50 = pygame.image.load("assets//images//items//vida//vida_50.png").convert_alpha()
+corazon_75 = pygame.image.load("assets//images//items//vida//vida_75.png").convert_alpha()
+corazon_100 = pygame.image.load("assets//images//items//vida//vida_100.png").convert_alpha()
+
+# Escalar imagenes de corazones
+corazon_0 = escalar_imagen(corazon_0, constantes.ESCALA_CORAZON)
+corazon_25 = escalar_imagen(corazon_25, constantes.ESCALA_CORAZON)
+corazon_50 = escalar_imagen(corazon_50, constantes.ESCALA_CORAZON)
+corazon_75 = escalar_imagen(corazon_75, constantes.ESCALA_CORAZON)
+corazon_100 = escalar_imagen(corazon_100, constantes.ESCALA_CORAZON)
 
 # Personaje
 animaciones = []
@@ -69,7 +98,7 @@ imagen_balas = pygame.image.load(f"assets//images//armas//bala.png").convert_alp
 imagen_balas = escalar_imagen(imagen_balas, constantes.ESCALA_ARMA)
 
 # Crear un objeto de la clase personaje
-jugador = Personaje(50,50, animaciones, constantes.VIDA_PERSONAJE)
+jugador = Personaje(50,100, animaciones, constantes.VIDA_PERSONAJE)
 
 # Crear un enemigo de la clase personaje
 demon = Enemigos(400,300, animaciones_enemigos[0], constantes.VIDA_DEMON)
@@ -143,7 +172,7 @@ while run:
     # actualizar al enemigo
     for enemigo in lista_enemigos:
         enemigo.actualizar()
-        print(enemigo.energia)
+        #print(enemigo.energia)
 
     # actualizar al arma
     bala = pistola.actualizar(jugador)
@@ -177,6 +206,9 @@ while run:
     # dibujar balas
     for bala in grupo_balas:
         bala.dibujar(ventana)
+
+    # dibujar vida del jugador
+    vida_jugador()
 
     # dibujar texto de daño
     grupo_texto_danio.draw(ventana)
