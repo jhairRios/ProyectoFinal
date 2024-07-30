@@ -90,14 +90,19 @@ while run:
     bala = pistola.actualizar(jugador)
     if bala:
         grupo_balas.add(bala)
-    print(grupo_balas)
+    for bala in grupo_balas:
+        bala.actualizar()
+        
 
     # dibujar al jugador
     jugador.dibujar(ventana)
 
     # dibujar al arma
     pistola.dibujar(ventana)
-
+    
+    # dibujar las balas
+    for bala in grupo_balas:
+        bala.dibujar(ventana)
     # for para ver los eventos del jquery
     for event in pygame.event.get():
 
