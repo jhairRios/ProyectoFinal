@@ -5,6 +5,7 @@ from personaje import Personaje
 from personaje import Enemigos
 from arma import Arma
 from textos import Texto_de_danio
+from items import Item
 
 #Funciones
 # escalar imagen
@@ -97,6 +98,19 @@ imagen_pistola = escalar_imagen(imagen_pistola, constantes.ESCALA_ARMA)
 imagen_balas = pygame.image.load(f"assets//images//armas//bala.png").convert_alpha()
 imagen_balas = escalar_imagen(imagen_balas, constantes.ESCALA_ARMA)
 
+# Items
+imagen_botiquin = pygame.image.load("assets//images//items//salud//botiquin.png").convert_alpha()
+imagen_botiquin = escalar_imagen(imagen_botiquin, constantes.ESCALA_ITEM)
+
+imagenes_monedas = []
+ruta_img_moneda = "assets//images//items//moneda"
+num_img_moneda = contar_elementos(ruta_img_moneda)
+
+for i in range(num_img_moneda):
+    img_moneda = pygame.image.load(f"{ruta_img_moneda}//moneda_{i}.png").convert_alpha()
+    img_moneda = escalar_imagen(img_moneda, constantes.ESCALA_ITEM)
+    imagenes_monedas.append(img_moneda)
+
 # Crear un objeto de la clase personaje
 jugador = Personaje(50,100, animaciones, constantes.VIDA_PERSONAJE)
 
@@ -119,7 +133,14 @@ pistola = Arma(imagen_pistola, imagen_balas)
 # Crear grupo de sprites
 grupo_balas = pygame.sprite.Group()
 grupo_texto_danio = pygame.sprite.Group()
+grupo_items = pygame.sprite.Group()
 
+# Crear items
+item_moneda = Item(200, 50, 0, imagenes_monedas)
+item_botiquin = Item(300, 50, 1, [imagen_botiquin])
+
+grupo_items.add(item_moneda)
+grupo_items.add(item_botiquin)
 
 
 #definir variables de movimiento del jugador
@@ -192,6 +213,9 @@ while run:
 
     # actualizar texto de daño
     grupo_texto_danio.update()
+
+    # actualizar items
+    grupo_items.update()
         
     # dibujar al jugador
     jugador.dibujar(ventana)
@@ -212,6 +236,9 @@ while run:
 
     # dibujar texto de daño
     grupo_texto_danio.draw(ventana)
+
+    # dibujar items
+    grupo_items.draw(ventana)
 
     # for para ver los eventos del jquery
     for event in pygame.event.get():
