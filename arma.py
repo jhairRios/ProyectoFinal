@@ -21,11 +21,11 @@ class Arma():
         self.forma.center = personaje.forma.center
         if personaje.flip == False:
             self.forma.x += personaje.forma.width/10
-            self.rotar_arma(False)
+            #self.rotar_arma(False)
         
         elif personaje.flip == True:
             self.forma.x -= personaje.forma.width/10
-            self.rotar_arma(True)
+            #self.rotar_arma(True)
 
         self.forma.y += 10
 
@@ -49,20 +49,20 @@ class Arma():
 
         
 
-    def rotar_arma(self, rotar):
-        if rotar == True:
-            imagen_flip = pygame.transform.flip(self.imagen_original, True, False)
+    # def rotar_arma(self, rotar):
+    #     if rotar == True:
+    #         imagen_flip = pygame.transform.flip(self.imagen_original, True, False)
 
-            self.imagen = pygame.transform.rotate(imagen_flip, self.angulo)
-        else:
-            imagen_flip = pygame.transform.flip(self.imagen_original, False, False)
+    #         self.imagen = pygame.transform.rotate(imagen_flip, self.angulo)
+    #     else:
+    #         imagen_flip = pygame.transform.flip(self.imagen_original, False, False)
 
-            self.imagen = pygame.transform.rotate(imagen_flip, self.angulo)
+    #         self.imagen = pygame.transform.rotate(imagen_flip, self.angulo)
 
     def dibujar(self, interfaz):
-        self.imagen = pygame.transform.rotate(self.imagen, self.angulo)
+        #self.imagen = pygame.transform.rotate(self.imagen, self.angulo)
         interfaz.blit(self.imagen, self.forma)
-        #pygame.draw.rect(interfaz, constantes.COLOR_ARMA, self.forma, width=1)
+        # pygame.draw.rect(interfaz, constantes.COLOR_ARMA, self.forma, width=1)
 
 
 class Bala(pygame.sprite.Sprite):

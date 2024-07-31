@@ -23,6 +23,11 @@ def contar_elementos(directorio):
 def nombres_carpetas(directorio):
     return os.listdir(directorio)
 
+def dibujar_texto(texto, fuente, color, x, y):
+    imagen_texto = fuente.render(texto, True, color)
+    ventana.blit(imagen_texto, (x, y))
+
+
 def vida_jugador():
     for i in range(5):
         energia_actual = jugador.energia - (i * 100)
@@ -49,6 +54,7 @@ pygame.display.set_caption("Juego Progra. Avanzada")
 
 # Inicializar fuente
 fuente = pygame.font.Font("assets//fonts//Super_Mario_Bros_NES.ttf", constantes.ESCALA_TEXTO_DANIO)
+fuente_monedas = pygame.font.Font("assets//fonts//Super_Mario_Bros_NES.ttf", constantes.ESCALA_TEXTO_MONEDA)
 
 #importar imagenes
 
@@ -100,7 +106,7 @@ imagen_balas = escalar_imagen(imagen_balas, constantes.ESCALA_ARMA)
 
 # Items
 imagen_botiquin = pygame.image.load("assets//images//items//salud//botiquin.png").convert_alpha()
-imagen_botiquin = escalar_imagen(imagen_botiquin, constantes.ESCALA_ITEM)
+imagen_botiquin = escalar_imagen(imagen_botiquin, constantes.ESCALA_BOTIQUIN)
 
 imagenes_monedas = []
 ruta_img_moneda = "assets//images//items//moneda"
@@ -108,11 +114,11 @@ num_img_moneda = contar_elementos(ruta_img_moneda)
 
 for i in range(num_img_moneda):
     img_moneda = pygame.image.load(f"{ruta_img_moneda}//moneda_{i}.png").convert_alpha()
-    img_moneda = escalar_imagen(img_moneda, constantes.ESCALA_ITEM)
+    img_moneda = escalar_imagen(img_moneda, constantes.ESCALA_MONEDA)
     imagenes_monedas.append(img_moneda)
 
 # Crear un objeto de la clase personaje
-jugador = Personaje(50,100, animaciones, constantes.VIDA_PERSONAJE)
+jugador = Personaje(400,200, animaciones, constantes.VIDA_PERSONAJE)
 
 # Crear un enemigo de la clase personaje
 demon = Enemigos(400,300, animaciones_enemigos[0], constantes.VIDA_DEMON)
@@ -215,7 +221,10 @@ while run:
     grupo_texto_danio.update()
 
     # actualizar items
-    grupo_items.update()
+    grupo_items.update(jugador)
+
+    # dibujar items
+    grupo_items.draw(ventana)
         
     # dibujar al jugador
     jugador.dibujar(ventana)
@@ -233,12 +242,12 @@ while run:
 
     # dibujar vida del jugador
     vida_jugador()
+    dibujar_texto(f"Monedas {jugador.monedas}", fuente_monedas, constantes.COLOR_TEXTO, 1200, 10)
 
     # dibujar texto de daño
     grupo_texto_danio.draw(ventana)
 
-    # dibujar items
-    grupo_items.draw(ventana)
+    
 
     # for para ver los eventos del jquery
     for event in pygame.event.get():
