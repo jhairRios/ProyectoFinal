@@ -6,7 +6,7 @@ class Mundo():
         self.tiles_mapa = []
 
     def procesar_mapa(self, data, lista_tiles):
-        self.largo_de_nivel = len(data)
+        self.largo_de_nivel = len(data[0])
 
         for y, row in enumerate(data):
             for x, tile in enumerate(row):

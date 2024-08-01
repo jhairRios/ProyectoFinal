@@ -14,6 +14,7 @@ class Personaje():
         self.forma = self.image.get_rect()
         self.forma.center = (x, y)
         self.en_movimiento = False  # Bandera para controlar el movimiento
+        
 
     def actualizar(self):
         # comprobar si el jugador esta muerto
@@ -34,6 +35,8 @@ class Personaje():
         #pygame.draw.rect(interfaz, constantes.COLOR_PERSONAJE, self.forma, width=1)
 
     def movimiento(self, delta_x, delta_y):
+        posicion_pantalla = [0, 0]
+
         if delta_x != 0 or delta_y != 0:
             self.en_movimiento = True
         else:
@@ -46,8 +49,15 @@ class Personaje():
         elif delta_x < 0:
             self.flip = True
 
-        self.forma.x += delta_x
-        self.forma.y += delta_y
+        self.forma.x = self.forma.x + delta_x
+        self.forma.y = self.forma.y + delta_y
+
+        
+        if self.forma.right > (constantes.ANCHO_VENTANA - constantes.LIMITE_PANTALLA):
+            posicion_pantalla[0] = (constantes.ANCHO_VENTANA - constantes.LIMITE_PANTALLA) - self.forma.right
+        if self.forma.left < constantes.LIMITE_PANTALLA:
+            posicion_pantalla[0] = constantes.LIMITE_PANTALLA - self.forma.left
+        return posicion_pantalla
 
 class Enemigos():
     def __init__(self, x, y, animaciones, energia):

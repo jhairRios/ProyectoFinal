@@ -67,6 +67,9 @@ ventana = pygame.display.set_mode((constantes.ANCHO_VENTANA, constantes.ALTO_VEN
 # Nombre de la ventana
 pygame.display.set_caption("Juego Progra. Avanzada")
 
+# posicion de la pantalla
+posicion_pantalla = [0, 0]
+
 # Inicializar fuente
 fuente = pygame.font.Font("assets//fonts//Super_Mario_Bros_NES.ttf", constantes.ESCALA_TEXTO_DANIO)
 fuente_llave = pygame.font.Font("assets//fonts//Super_Mario_Bros_NES.ttf", constantes.ESCALA_TEXTO_LLAVE)
@@ -139,7 +142,7 @@ for i in range(num_img_llave):
     imagenes_llave.append(img_llave)
 
 # Crear un objeto de la clase personaje
-jugador = Personaje(400,200, animaciones, constantes.VIDA_PERSONAJE)
+jugador = Personaje(150,150, animaciones, constantes.VIDA_PERSONAJE)
 
 # Crear un enemigo de la clase personaje
 demon = Enemigos(400,300, animaciones_enemigos[0], constantes.VIDA_DEMON)
@@ -243,7 +246,8 @@ while run:
         delta_y = constantes.VELOCIDAD_PERSONAJE
 
     # mover al jugar
-    jugador.movimiento(delta_x, delta_y)
+    posicion_pantalla = jugador.movimiento(delta_x, delta_y)
+    print(posicion_pantalla)
 
     # actualizar al jugador
     jugador.actualizar()
