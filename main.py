@@ -49,6 +49,14 @@ def dibujar_malla():
         pygame.draw.line(ventana, constantes.COLOR_TEXTO, (x*constantes.ESCALA_TILE, 0), (x*constantes.ESCALA_TILE, constantes.ALTO_VENTANA))
         pygame.draw.line(ventana, constantes.COLOR_TEXTO, (0, x*constantes.ESCALA_TILE), (constantes.ANCHO_VENTANA, x*constantes.ESCALA_TILE))
 
+# Función para cargar datos de un archivo CSV
+def cargar_datos_csv(ruta_archivo):
+    data = []
+    with open(ruta_archivo, newline='') as csvfile:
+        reader = csv.reader(csvfile, delimiter=';')
+        for fila in reader:
+            data.append([int(columna) for columna in fila])
+    return data
 
 # Inicializamos la libreria
 pygame.init()
@@ -172,26 +180,28 @@ mover_derecha = False
 reloj = pygame.time.Clock()
 
 # Crear un objeto de la clase mundo
+
+# Cargar datos de piso y paredes
+data_fondo = cargar_datos_csv("niveles//nivel_1//nivel_1_fondo.csv")
+data_piso = cargar_datos_csv("niveles//nivel_1//nivel_1_piso.csv")
+data_paredes = cargar_datos_csv("niveles//nivel_1//nivel_1_paredes.csv")
+data_decoracion = cargar_datos_csv("niveles//nivel_1//nivel_1_decoracion.csv")
+
+# Crear data_mapa combinando piso y paredes
 data_mapa = []
+for x in range(len(data_fondo)):
+    fila_mapa = []
+    for y in range(len(data_fondo[x])):
+        if data_decoracion[x][y] != 16:  # Asumiendo que 16 significa sin decoración
+            fila_mapa.append(data_decoracion[x][y])
+        elif data_paredes[x][y] != 16:  # Asumiendo que 16 significa sin pared
+            fila_mapa.append(data_paredes[x][y])
+        elif data_piso[x][y] != 0:  # Asumiendo que 0 significa sin piso
+            fila_mapa.append(data_piso[x][y])
+        else:
+            fila_mapa.append(data_fondo[x][y])
 
-for fila in range(constantes.FILAS):
-    filas = [7] * constantes.COLUMNAS
-    data_mapa.append(filas)
-
-# Cargar archivo del mapa
-with open("niveles//nivel_1//nivel_1_paredes.csv", newline='') as csvfile:
-    reader = csv.reader(csvfile, delimiter=';')
-    for x, fila in enumerate(reader):
-        for y, columna in enumerate(fila):
-            data_mapa[x][y] = int(columna)
-
-# Cargar archivo del mapa
-with open("niveles//nivel_1//nivel_1_piso.csv", newline='') as csvfile:
-    reader = csv.reader(csvfile, delimiter=';')
-    for x, fila in enumerate(reader):
-        for y, columna in enumerate(fila):
-            data_mapa[x][y] = int(columna)
-
+    data_mapa.append(fila_mapa)
 
 
 mapa = Mundo()
@@ -211,7 +221,7 @@ while run:
     # velocidad de 60 fps
     reloj.tick(constantes.FPS)
     
-    ventana.fill(constantes.COLOR_BG)
+    ventana.fill(constantes.COLOR_BG_N1)
 
     # dibujar malla
     # dibujar_malla()
