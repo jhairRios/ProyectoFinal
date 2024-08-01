@@ -5,7 +5,7 @@ from personaje import *
 class Item(pygame.sprite.Sprite):
     def __init__(self, x, y, item_type, animacion_list):
         pygame.sprite.Sprite.__init__(self)
-        self.item_type = item_type # 0 = monedas, 1 = botiquin
+        self.item_type = item_type # 0 = llave, 1 = botiquin
         self.animacion_list = animacion_list
         self.frame_index = 0
         self.update_time = pygame.time.get_ticks()
@@ -16,9 +16,9 @@ class Item(pygame.sprite.Sprite):
     def update(self, personaje):
         # comprobar colision entre personaje y item
         if self.rect.colliderect(personaje.forma):
-            #moneda
+            #llave
             if self.item_type == 0:
-                personaje.monedas += 1
+                personaje.llave += 1
             #botiquin
             elif self.item_type == 1:
                 personaje.energia += 100
@@ -27,7 +27,7 @@ class Item(pygame.sprite.Sprite):
 
             self.kill()
 
-        cooldown_animacion = constantes.COOLDOWN_MONEDA
+        cooldown_animacion = constantes.COOLDOWN_LLAVE
         self.image = self.animacion_list[self.frame_index]
 
         if pygame.time.get_ticks() - self.update_time > cooldown_animacion:

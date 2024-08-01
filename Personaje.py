@@ -3,7 +3,7 @@ import constantes
 
 class Personaje():
     def __init__(self, x, y, animaciones, energia):
-        self.monedas = 0
+        self.llave = 0
         self.energia = energia
         self.vivo = True
         self.flip = False
@@ -31,7 +31,7 @@ class Personaje():
     def dibujar(self, interfaz):
         imagen_flip = pygame.transform.flip(self.image, self.flip, False)
         interfaz.blit(imagen_flip, self.forma)
-        # pygame.draw.rect(interfaz, constantes.COLOR_PERSONAJE, self.forma, width=1)
+        #pygame.draw.rect(interfaz, constantes.COLOR_PERSONAJE, self.forma, width=1)
 
     def movimiento(self, delta_x, delta_y):
         if delta_x != 0 or delta_y != 0:

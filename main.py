@@ -1,11 +1,13 @@
 import os
 import pygame
+import csv
 import constantes
 from personaje import Personaje
 from personaje import Enemigos
 from arma import Arma
 from textos import Texto_de_danio
 from items import Item
+from mundo import Mundo
 
 #Funciones
 # escalar imagen
@@ -42,6 +44,11 @@ def vida_jugador():
         else:
             ventana.blit(corazon_0, (10 + i * 40, 10))
 
+def dibujar_malla():
+    for x in range(28):
+        pygame.draw.line(ventana, constantes.COLOR_TEXTO, (x*constantes.ESCALA_TILE, 0), (x*constantes.ESCALA_TILE, constantes.ALTO_VENTANA))
+        pygame.draw.line(ventana, constantes.COLOR_TEXTO, (0, x*constantes.ESCALA_TILE), (constantes.ANCHO_VENTANA, x*constantes.ESCALA_TILE))
+
 
 # Inicializamos la libreria
 pygame.init()
@@ -54,7 +61,7 @@ pygame.display.set_caption("Juego Progra. Avanzada")
 
 # Inicializar fuente
 fuente = pygame.font.Font("assets//fonts//Super_Mario_Bros_NES.ttf", constantes.ESCALA_TEXTO_DANIO)
-fuente_monedas = pygame.font.Font("assets//fonts//Super_Mario_Bros_NES.ttf", constantes.ESCALA_TEXTO_MONEDA)
+fuente_llave = pygame.font.Font("assets//fonts//Super_Mario_Bros_NES.ttf", constantes.ESCALA_TEXTO_LLAVE)
 
 #importar imagenes
 
@@ -95,6 +102,12 @@ for enemigo in tipo_enemigos:
     
     animaciones_enemigos.append(lista_temp)
 
+# Imagenes de tiles del mapa
+lista_tiles = []
+for x in range(constantes.NUM_TILES_N1):
+    tile_imagen = pygame.image.load(f"assets//images//tiles//nivel_1//tileset_{x+1}.png").convert_alpha()
+    tile_imagen = pygame.transform.scale(tile_imagen, (constantes.ESCALA_TILE, constantes.ESCALA_TILE))
+    lista_tiles.append(tile_imagen)
 
 # Arma
 imagen_pistola = pygame.image.load(f"assets//images//armas//arma.png").convert_alpha()
@@ -108,14 +121,14 @@ imagen_balas = escalar_imagen(imagen_balas, constantes.ESCALA_ARMA)
 imagen_botiquin = pygame.image.load("assets//images//items//salud//botiquin.png").convert_alpha()
 imagen_botiquin = escalar_imagen(imagen_botiquin, constantes.ESCALA_BOTIQUIN)
 
-imagenes_monedas = []
-ruta_img_moneda = "assets//images//items//moneda"
-num_img_moneda = contar_elementos(ruta_img_moneda)
+imagenes_llave = []
+ruta_img_llave = "assets//images//items//llave"
+num_img_llave = contar_elementos(ruta_img_llave)
 
-for i in range(num_img_moneda):
-    img_moneda = pygame.image.load(f"{ruta_img_moneda}//moneda_{i}.png").convert_alpha()
-    img_moneda = escalar_imagen(img_moneda, constantes.ESCALA_MONEDA)
-    imagenes_monedas.append(img_moneda)
+for i in range(num_img_llave):
+    img_llave = pygame.image.load(f"{ruta_img_llave}//llave_{i}.png").convert_alpha()
+    img_llave = escalar_imagen(img_llave, constantes.ESCALA_LLAVE)
+    imagenes_llave.append(img_llave)
 
 # Crear un objeto de la clase personaje
 jugador = Personaje(400,200, animaciones, constantes.VIDA_PERSONAJE)
@@ -142,8 +155,8 @@ grupo_texto_danio = pygame.sprite.Group()
 grupo_items = pygame.sprite.Group()
 
 # Crear items
-item_moneda = Item(200, 50, 0, imagenes_monedas)
-item_botiquin = Item(300, 50, 1, [imagen_botiquin])
+item_moneda = Item(900, 100, 0, imagenes_llave)
+item_botiquin = Item(1000, 50, 1, [imagen_botiquin])
 
 grupo_items.add(item_moneda)
 grupo_items.add(item_botiquin)
@@ -157,6 +170,32 @@ mover_derecha = False
 
 # controlar el movimiento del jugador
 reloj = pygame.time.Clock()
+
+# Crear un objeto de la clase mundo
+data_mapa = []
+
+for fila in range(constantes.FILAS):
+    filas = [7] * constantes.COLUMNAS
+    data_mapa.append(filas)
+
+# Cargar archivo del mapa
+with open("niveles//nivel_1//nivel_1_paredes.csv", newline='') as csvfile:
+    reader = csv.reader(csvfile, delimiter=';')
+    for x, fila in enumerate(reader):
+        for y, columna in enumerate(fila):
+            data_mapa[x][y] = int(columna)
+
+# Cargar archivo del mapa
+with open("niveles//nivel_1//nivel_1_piso.csv", newline='') as csvfile:
+    reader = csv.reader(csvfile, delimiter=';')
+    for x, fila in enumerate(reader):
+        for y, columna in enumerate(fila):
+            data_mapa[x][y] = int(columna)
+
+
+
+mapa = Mundo()
+mapa.procesar_mapa(data_mapa, lista_tiles)
 
 # Cargar imagen del puntero
 puntero_img = pygame.image.load("assets//images//armas//mira.png").convert_alpha()
@@ -173,6 +212,9 @@ while run:
     reloj.tick(constantes.FPS)
     
     ventana.fill(constantes.COLOR_BG)
+
+    # dibujar malla
+    # dibujar_malla()
 
     # calcular movimiento del jugador
     delta_x = 0
@@ -223,6 +265,9 @@ while run:
     # actualizar items
     grupo_items.update(jugador)
 
+    # dibujar mapa
+    mapa.dibujar(ventana)
+
     # dibujar items
     grupo_items.draw(ventana)
         
@@ -242,7 +287,7 @@ while run:
 
     # dibujar vida del jugador
     vida_jugador()
-    dibujar_texto(f"Monedas {jugador.monedas}", fuente_monedas, constantes.COLOR_TEXTO, 1200, 10)
+    dibujar_texto(f"Llave {jugador.llave}/1", fuente_llave, constantes.COLOR_TEXTO, 1200, 10)
 
     # dibujar texto de daño
     grupo_texto_danio.draw(ventana)
