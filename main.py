@@ -145,9 +145,9 @@ for i in range(num_img_llave):
 jugador = Personaje(150,150, animaciones, constantes.VIDA_PERSONAJE)
 
 # Crear un enemigo de la clase personaje
-demon = Enemigos(400,300, animaciones_enemigos[0], constantes.VIDA_DEMON)
-ghoul = Enemigos(400,400, animaciones_enemigos[1], constantes.VIDA_GHOUL)
-mole = Enemigos(400,500, animaciones_enemigos[2], constantes.VIDA_MOLE)
+demon = Enemigos(1300,300, animaciones_enemigos[0], constantes.VIDA_DEMON)
+ghoul = Enemigos(1300,400, animaciones_enemigos[1], constantes.VIDA_GHOUL)
+mole = Enemigos(1300,500, animaciones_enemigos[2], constantes.VIDA_MOLE)
 # Para agregar mas enemigos solo se debe agregar mas objetos de la clase enemigos
 
 # Crear lista de enemigos
@@ -166,8 +166,8 @@ grupo_texto_danio = pygame.sprite.Group()
 grupo_items = pygame.sprite.Group()
 
 # Crear items
-item_moneda = Item(900, 100, 0, imagenes_llave)
-item_botiquin = Item(1000, 50, 1, [imagen_botiquin])
+item_moneda = Item(1300, 100, 0, imagenes_llave)
+item_botiquin = Item(1300, 50, 1, [imagen_botiquin])
 
 grupo_items.add(item_moneda)
 grupo_items.add(item_botiquin)
@@ -224,7 +224,7 @@ while run:
     # velocidad de 60 fps
     reloj.tick(constantes.FPS)
     
-    ventana.fill(constantes.COLOR_BG_N1)
+    ventana.fill(constantes.COLOR_BG)
 
     # dibujar malla
     # dibujar_malla()
@@ -247,7 +247,10 @@ while run:
 
     # mover al jugar
     posicion_pantalla = jugador.movimiento(delta_x, delta_y)
-    print(posicion_pantalla)
+    #print(posicion_pantalla)
+
+    # actualizar el mapa
+    mapa.actualizar(posicion_pantalla)
 
     # actualizar al jugador
     jugador.actualizar()

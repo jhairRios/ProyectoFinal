@@ -18,6 +18,12 @@ class Mundo():
                 tile_data = [imagen, imagen_rect, imagen_x, imagen_y]
                 self.tiles_mapa.append(tile_data)
 
+    def actualizar(self, posicion_pantalla):
+        for tile in self.tiles_mapa:
+            tile[2] += posicion_pantalla[0]
+            tile[3] += posicion_pantalla[1]
+            tile[1].center = (tile[2], tile[3])
+
     def dibujar(self, ventana):
         for tile in self.tiles_mapa:
             ventana.blit(tile[0], tile[1])

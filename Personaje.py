@@ -53,10 +53,20 @@ class Personaje():
         self.forma.y = self.forma.y + delta_y
 
         
-        if self.forma.right > (constantes.ANCHO_VENTANA - constantes.LIMITE_PANTALLA):
-            posicion_pantalla[0] = (constantes.ANCHO_VENTANA - constantes.LIMITE_PANTALLA) - self.forma.right
-        if self.forma.left < constantes.LIMITE_PANTALLA:
-            posicion_pantalla[0] = constantes.LIMITE_PANTALLA - self.forma.left
+        if self.forma.right > (constantes.ANCHO_VENTANA - constantes.LIMITE_PANTALLA_R):
+            posicion_pantalla[0] = (constantes.ANCHO_VENTANA - constantes.LIMITE_PANTALLA_R) - self.forma.right
+            self.forma.right = constantes.ANCHO_VENTANA - constantes.LIMITE_PANTALLA_R
+        if self.forma.left < constantes.LIMITE_PANTALLA_L:
+            posicion_pantalla[0] = constantes.LIMITE_PANTALLA_L - self.forma.left
+            self.forma.left = constantes.LIMITE_PANTALLA_L
+
+        if self.forma.bottom > (constantes.ALTO_VENTANA - constantes.LIMITE_PANTALLA_B):
+            posicion_pantalla[1] = (constantes.ALTO_VENTANA - constantes.LIMITE_PANTALLA_B) - self.forma.bottom
+            self.forma.bottom = constantes.ALTO_VENTANA - constantes.LIMITE_PANTALLA_B
+        if self.forma.top < constantes.LIMITE_PANTALLA_T:
+            posicion_pantalla[1] = constantes.LIMITE_PANTALLA_T - self.forma.top
+            self.forma.top = constantes.LIMITE_PANTALLA_T
+            
         return posicion_pantalla
 
 class Enemigos():
