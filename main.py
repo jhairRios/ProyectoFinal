@@ -70,6 +70,9 @@ pygame.display.set_caption("Juego Progra. Avanzada")
 # posicion de la pantalla
 posicion_pantalla = [0, 0]
 
+# nivel
+nivel = 1
+
 # Inicializar fuente
 fuente = pygame.font.Font("assets//fonts//Super_Mario_Bros_NES.ttf", constantes.ESCALA_TEXTO_DANIO)
 fuente_llave = pygame.font.Font("assets//fonts//Super_Mario_Bros_NES.ttf", constantes.ESCALA_TEXTO_LLAVE)
@@ -165,12 +168,23 @@ grupo_balas = pygame.sprite.Group()
 grupo_texto_danio = pygame.sprite.Group()
 grupo_items = pygame.sprite.Group()
 
-# Crear items
-item_moneda = Item(1300, 100, 0, imagenes_llave)
-item_botiquin = Item(1300, 50, 1, [imagen_botiquin])
+# añadir items desde los datos del mapa
+mapa = Mundo()
+for item in mapa.lista_item:
+    grupo_items.add(item)
 
-grupo_items.add(item_moneda)
+# Crear items
+item_llave = Item(2600, 1700, 0, imagenes_llave)
+item_botiquin = Item(150, 50, 1, [imagen_botiquin])
+item_botiquin1 = Item(1400, 50, 1, [imagen_botiquin])
+item_botiquin2 = Item(1500, 50, 1, [imagen_botiquin])
+item_botiquin3 = Item(1600, 50, 1, [imagen_botiquin])
+
+grupo_items.add(item_llave)
 grupo_items.add(item_botiquin)
+grupo_items.add(item_botiquin1)
+grupo_items.add(item_botiquin2)
+grupo_items.add(item_botiquin3)
 
 
 #definir variables de movimiento del jugador
@@ -207,7 +221,7 @@ for x in range(len(data_fondo)):
     data_mapa.append(fila_mapa)
 
 
-mapa = Mundo()
+
 mapa.procesar_mapa(data_mapa, lista_tiles)
 
 # Cargar imagen del puntero
@@ -247,7 +261,7 @@ while run:
 
     # mover al jugar
     posicion_pantalla = jugador.movimiento(delta_x, delta_y)
-    #print(posicion_pantalla)
+    print(posicion_pantalla)
 
     # actualizar el mapa
     mapa.actualizar(posicion_pantalla)
@@ -257,7 +271,7 @@ while run:
 
     # actualizar al enemigo
     for enemigo in lista_enemigos:
-        enemigo.actualizar()
+        enemigo.actualizar(posicion_pantalla)
         #print(enemigo.energia)
 
     # actualizar al arma
@@ -277,10 +291,10 @@ while run:
 
 
     # actualizar texto de daño
-    grupo_texto_danio.update()
+    grupo_texto_danio.update(posicion_pantalla)
 
     # actualizar items
-    grupo_items.update(jugador)
+    grupo_items.update(posicion_pantalla, jugador)
 
     # dibujar mapa
     mapa.dibujar(ventana)
@@ -305,7 +319,8 @@ while run:
     # dibujar vida del jugador
     vida_jugador()
     dibujar_texto(f"Llave {jugador.llave}/1", fuente_llave, constantes.COLOR_TEXTO, 1200, 10)
-
+    dibujar_texto(f"Nivel {nivel}", fuente_llave, constantes.COLOR_TEXTO, 680, 10)
+    
     # dibujar texto de daño
     grupo_texto_danio.draw(ventana)
 

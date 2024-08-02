@@ -81,13 +81,17 @@ class Enemigos():
         self.forma = self.image.get_rect()
         self.forma.center = (x, y)
 
-    def actualizar(self):
+    def actualizar(self, posicion_pantalla):
+        # reposicionar basado en la posicion de la pantalla
+        self.forma.x += posicion_pantalla[0]
+        self.forma.y += posicion_pantalla[1]
+
         # comprobar si el enemigo esta muerto
         if self.energia <= 0:
             self.energia = 0
             self.vivo = False
 
-        cooldown_animacion = constantes.COOLDOWN_ANIMACION
+        cooldown_animacion = constantes.COOLDOWN_ANIMACION_ENEMIGOS
         if pygame.time.get_ticks() - self.update_time >= cooldown_animacion:
             self.frame_index = (self.frame_index + 1) % len(self.animaciones)
             self.update_time = pygame.time.get_ticks()

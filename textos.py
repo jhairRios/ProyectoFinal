@@ -9,7 +9,11 @@ class Texto_de_danio(pygame.sprite.Sprite):
         self.rect.center = (x, y)
         self.contador = 0
 
-    def update(self):
+    def update(self, posicion_pantalla):
+        # reposicionar basado en la posicion de la pantalla
+        self.rect.x += posicion_pantalla[0]
+        self.rect.y += posicion_pantalla[1]
+
         self.rect.y -= 2
         self.contador += 1
         if self.contador > 30:
