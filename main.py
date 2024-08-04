@@ -294,7 +294,7 @@ while run:
 
     # dibujar al enemigo
     for enemigo in lista_enemigos:
-        enemigo.actualizar(posicion_pantalla)
+        enemigo.actualizar(jugador, posicion_pantalla, mapa.tile_paredes)
         enemigo.dibujar(ventana)
 
     # dibujar al arma
