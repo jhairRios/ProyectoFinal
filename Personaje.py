@@ -34,7 +34,7 @@ class Personaje():
         interfaz.blit(imagen_flip, self.forma)
         #pygame.draw.rect(interfaz, constantes.COLOR_PERSONAJE, self.forma, width=1)
 
-    def movimiento(self, delta_x, delta_y):
+    def movimiento(self, delta_x, delta_y, tile_paredes):
         posicion_pantalla = [0, 0]
 
         if delta_x != 0 or delta_y != 0:
@@ -49,8 +49,21 @@ class Personaje():
         elif delta_x < 0:
             self.flip = True
 
-        self.forma.x = self.forma.x + delta_x
-        self.forma.y = self.forma.y + delta_y
+        self.forma.x += delta_x
+        for pared in tile_paredes:
+            if pared[1].colliderect(self.forma):
+                if delta_x > 0:
+                    self.forma.right = pared[1].left
+                if delta_x < 0:
+                    self.forma.left = pared[1].right
+
+        self.forma.y += delta_y
+        for pared in tile_paredes:
+            if pared[1].colliderect(self.forma):
+                if delta_y > 0:
+                    self.forma.bottom = pared[1].top
+                if delta_y < 0:
+                    self.forma.top = pared[1].bottom
 
         
         if self.forma.right > (constantes.ANCHO_VENTANA - constantes.LIMITE_PANTALLA_R):

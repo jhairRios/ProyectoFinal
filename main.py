@@ -115,6 +115,7 @@ for enemigo in tipo_enemigos:
         lista_temp.append(img_enemigo)
     
     animaciones_enemigos.append(lista_temp)
+    lista_enemigos = []
 
 # Imagenes de tiles del mapa
 lista_tiles = []
@@ -144,21 +145,17 @@ for i in range(num_img_llave):
     img_llave = escalar_imagen(img_llave, constantes.ESCALA_LLAVE)
     imagenes_llave.append(img_llave)
 
+item_imagenes = [imagenes_llave, [imagen_botiquin]]
+
 # Crear un objeto de la clase personaje
 jugador = Personaje(150,150, animaciones, constantes.VIDA_PERSONAJE)
 
 # Crear un enemigo de la clase personaje
-demon = Enemigos(1300,300, animaciones_enemigos[0], constantes.VIDA_DEMON)
-ghoul = Enemigos(1300,400, animaciones_enemigos[1], constantes.VIDA_GHOUL)
-mole = Enemigos(1300,500, animaciones_enemigos[2], constantes.VIDA_MOLE)
+# demon = Enemigos(1300,300, animaciones_enemigos[0], constantes.VIDA_DEMON)
+# ghoul = Enemigos(1300,400, animaciones_enemigos[1], constantes.VIDA_GHOUL)
+# mole = Enemigos(1300,500, animaciones_enemigos[2], constantes.VIDA_MOLE)
 # Para agregar mas enemigos solo se debe agregar mas objetos de la clase enemigos
 
-# Crear lista de enemigos
-lista_enemigos = []
-lista_enemigos.append(demon)
-lista_enemigos.append(ghoul)
-lista_enemigos.append(mole)
-# Para agregar mas enemigos solo se debe agregar mas objetos de la clase enemigos a la lista
 
 # Crear un arma de la clase arma
 pistola = Arma(imagen_pistola, imagen_balas)
@@ -168,23 +165,14 @@ grupo_balas = pygame.sprite.Group()
 grupo_texto_danio = pygame.sprite.Group()
 grupo_items = pygame.sprite.Group()
 
-# añadir items desde los datos del mapa
-mapa = Mundo()
-for item in mapa.lista_item:
-    grupo_items.add(item)
+
 
 # Crear items
-item_llave = Item(2600, 1700, 0, imagenes_llave)
-item_botiquin = Item(150, 50, 1, [imagen_botiquin])
-item_botiquin1 = Item(1400, 50, 1, [imagen_botiquin])
-item_botiquin2 = Item(1500, 50, 1, [imagen_botiquin])
-item_botiquin3 = Item(1600, 50, 1, [imagen_botiquin])
+# item_llave = Item(2600, 1700, 0, imagenes_llave)
+# item_botiquin = Item(150, 50, 1, [imagen_botiquin])
 
-grupo_items.add(item_llave)
-grupo_items.add(item_botiquin)
-grupo_items.add(item_botiquin1)
-grupo_items.add(item_botiquin2)
-grupo_items.add(item_botiquin3)
+# grupo_items.add(item_llave)
+# grupo_items.add(item_botiquin)
 
 
 #definir variables de movimiento del jugador
@@ -196,33 +184,37 @@ mover_derecha = False
 # controlar el movimiento del jugador
 reloj = pygame.time.Clock()
 
-# Crear un objeto de la clase mundo
 
-# Cargar datos de piso y paredes
-data_fondo = cargar_datos_csv("niveles//nivel_1//nivel_1_fondo.csv")
-data_piso = cargar_datos_csv("niveles//nivel_1//nivel_1_piso.csv")
-data_paredes = cargar_datos_csv("niveles//nivel_1//nivel_1_paredes.csv")
-data_decoracion = cargar_datos_csv("niveles//nivel_1//nivel_1_decoracion.csv")
+# Cargar datos del mapa
+data_fondo = cargar_datos_csv("niveles//nivel_1//nivel_1.csv")
 
 # Crear data_mapa combinando piso y paredes
 data_mapa = []
-for x in range(len(data_fondo)):
-    fila_mapa = []
-    for y in range(len(data_fondo[x])):
-        if data_decoracion[x][y] != 16:  # Asumiendo que 16 significa sin decoración
-            fila_mapa.append(data_decoracion[x][y])
-        elif data_paredes[x][y] != 16:  # Asumiendo que 16 significa sin pared
-            fila_mapa.append(data_paredes[x][y])
-        elif data_piso[x][y] != 0:  # Asumiendo que 0 significa sin piso
-            fila_mapa.append(data_piso[x][y])
-        else:
-            fila_mapa.append(data_fondo[x][y])
 
-    data_mapa.append(fila_mapa)
+filas = [7] * constantes.COLUMNAS
+for filas in range(constantes.FILAS):
+    filas = [7] * constantes.COLUMNAS
+    data_mapa.append(filas)
 
+# Cargar datos de los elementos del mapa
+with open("niveles//nivel_1//nivel_1.csv", newline='') as csvfile:
+    reader = csv.reader(csvfile, delimiter=';')
+    for x, fila in enumerate(reader):
+        for y, columna in enumerate(fila):
+            data_mapa[x][y] = int(columna)
 
 
-mapa.procesar_mapa(data_mapa, lista_tiles)
+# Crear un objeto de la clase mundo
+mapa = Mundo()
+mapa.procesar_mapa(data_mapa, lista_tiles, item_imagenes, animaciones_enemigos)
+
+# añadir items desde los datos del mapa
+for item in mapa.lista_item:
+    grupo_items.add(item)
+
+# añadir enemigos desde los datos del mapa
+for enemigos in mapa.lista_enemigo:
+    lista_enemigos.append(enemigos)
 
 # Cargar imagen del puntero
 puntero_img = pygame.image.load("assets//images//armas//mira.png").convert_alpha()
@@ -260,8 +252,8 @@ while run:
         delta_y = constantes.VELOCIDAD_PERSONAJE
 
     # mover al jugar
-    posicion_pantalla = jugador.movimiento(delta_x, delta_y)
-    print(posicion_pantalla)
+    posicion_pantalla = jugador.movimiento(delta_x, delta_y, mapa.tile_paredes)
+    #print(posicion_pantalla)
 
     # actualizar el mapa
     mapa.actualizar(posicion_pantalla)
