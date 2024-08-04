@@ -94,7 +94,8 @@ class Enemigos():
         self.forma = self.image.get_rect()
         self.forma.center = (x, y)
 
-    def actualizar(self, posicion_pantalla):
+    def actualizar(self,posicion_pantalla):
+
         # reposicionar basado en la posicion de la pantalla
         self.forma.x += posicion_pantalla[0]
         self.forma.y += posicion_pantalla[1]

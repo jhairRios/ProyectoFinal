@@ -261,11 +261,6 @@ while run:
     # actualizar al jugador
     jugador.actualizar()
 
-    # actualizar al enemigo
-    for enemigo in lista_enemigos:
-        enemigo.actualizar(posicion_pantalla)
-        #print(enemigo.energia)
-
     # actualizar al arma
     bala = pistola.actualizar(jugador)
     if bala:
@@ -299,6 +294,7 @@ while run:
 
     # dibujar al enemigo
     for enemigo in lista_enemigos:
+        enemigo.actualizar(posicion_pantalla)
         enemigo.dibujar(ventana)
 
     # dibujar al arma
