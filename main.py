@@ -3,10 +3,8 @@ import pygame
 import csv
 import constantes
 from personaje import Personaje
-from personaje import Enemigos
 from arma import Arma
 from textos import Texto_de_danio
-from items import Item
 from mundo import Mundo
 
 #Funciones
